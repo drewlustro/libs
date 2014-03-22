@@ -1,0 +1,140 @@
+// -----------------------------
+// General Tools
+// -----------------------------
+
+=vendorize($property, $value)
+    -webkit-#{$property}: $value
+    -moz-#{$property}: $value
+    -ms-#{$property}: $value
+    -o-#{$property}: $value
+    #{$property}: $value
+
+=no-select
+    -webkit-touch-callout: none
+    -webkit-user-select: none
+    -khtml-user-select: none
+    -moz-user-select: none
+    -ms-user-select: none
+    user-select: none
+
+=clearfix
+    &:before, &:after
+        content: "\0020"
+        display: block
+        height: 0
+        overflow: hidden
+    &:after
+        clear: both
+
+=block-center
+    display: block
+    margin-left: auto
+    margin-right: auto
+
+=list-reset
+    list-style: none
+    padding: 0
+    margin: 0
+
+// -----------------------------
+// Styles / Fx
+// -----------------------------
+
+=text-shadow-white($size: 1px, $opacity: 0.9)
+    text-shadow: 0 $size 0 rgba(255, 255, 255, $opacity)
+
+=text-shadow-black($size: 1px, $opacity: 0.8)
+    text-shadow: 0 $size 0 rgba(0, 0, 0, $opacity)
+
+=hover-active-focus($property, $value)
+    &:hover, &:active, &:focus
+        #{$property}: $value
+
+// Sets up custom modal positioning metrics and fade-in/out effects
+=modal-position($width: 560px, $height: 280px)
+    position: fixed
+    top: 50%
+    left: 50%
+    width: $width
+    margin-left: (- $width / 2)
+    max-height: $height
+    margin-top: ((- $height / 2) + 20px)
+    &.active
+        margin-top: (- $height / 2)
+
+// -----------------------------
+// Responsive Tools
+// -----------------------------
+
+// Convenient responsive breakpoints based on Bootstrap 3 defaults
+=query($point)
+    @if $point == one-column or $point == xs
+        @media (max-width: 767px)
+            @content
+    // Two column, "non-mobile" and above
+    @if $point == full or $point == xs-plus
+        @media (min-width: 768px)
+            @content
+    // Two column, "non-mobile" only
+    @if $point == sm
+        @media (min-width: 768px) and (max-width: 991px)
+            @content
+    // Two column, "non-mobile" and above
+    @if $point == sm-plus
+        @media (min-width: 768px)
+            @content
+    // Three column, condensed only
+    @if $point == md
+        @media (min-width: 992px) and (max-width: 1999px)
+            @content
+    // Three column, condensed and above
+    @if $point == md-plus
+        @media (min-width: 992px)
+            @content
+    // Three column, design target size
+    @if $point == lg
+        @media (min-width: 1200px)
+            @content
+
+=prem($prop, $pxvals, $base: $base-font-size)
+    $rem_comp: null
+    $px_comp: null
+    @each $pxval in $pxvals
+        $rem_comp: $rem_comp #{$pxval / $base}rem
+        $px_comp: $px_comp #{$pxval}px
+    #{$prop}: #{$px_comp}
+    #{$prop}: #{$rem_comp}
+
+=pem($prop, $pxvals, $base: $base-font-size)
+    $em_comp: null
+    @each $pxval in $pxvals
+        $em_comp: $em_comp #{$pxval / $base}em
+    #{$prop}: #{$em_comp}
+
+// Used to convert PX to EMs for multiple properties or values or both.
+// base is an optional measurement that allows making measurements relative to the parent font size rather than the current. Also accepts a list of lists (instead a list of values) for properties that accept multiple lists of values. Only numbers of converted; everything else is passed through.
+// @include scale(line-height, 30)
+// @include scale(line-height, 30, 16)
+// @include scale(width height, 125);
+// @include scale(padding, 0 25, 16);
+// @include scale(text-shadow, (#0d6e28 1 1) (#777 0 0 2), 16);
+// @include scale(box-shadow, (inset 0 0 0 1 #2a9022) (inset 0 0 3 #459966), 16);
+
+=scale($props, $sizes, $base: $base-font-size)
+    $values: ()
+    $sublists: false
+    @each $s in $sizes
+        /* unwrap lists for values that have multiple list of values such as text-shadow */
+        @if type-of($s) == list
+            $sublists: true
+            $vv: ()
+            @each $ss in $s
+                $vv: append($vv, if(type-of($ss) == number, #{$ss / $base}em, $ss))
+
+            $values: append($values, join((), $vv))
+        @else
+            $values: append($values, if(type-of($s) == number, #{$s / $base}em, $s))
+
+    $value: join((), $values, if($sublists, comma, space))
+    @each $prop in $props
+        #{$prop}: $value
