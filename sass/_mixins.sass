@@ -17,7 +17,51 @@
     -ms-user-select: none
     user-select: none
 
-=clearfix
+=no-outline
+    +hover-active-focus
+        outline: none
+        -moz-outline-style: none
+
+=no-text-size-adjust
+    -webkit-text-size-adjust: none
+    -moz-text-size-adjust: none
+    -ms-text-size-adjust: none
+    -o-text-size-adjust: none
+    text-size-adjust: none
+
+=hover-active-focus
+    &:hover,
+    &:active,
+    &:focus
+        @content
+
+=debug
+    outline: 1px solid #c0392b !important
+    z-index: 999999
+
+// -----------------------------
+// 3D Performance
+// -----------------------------
+
+// Convenience mixin for content elements that need to be shifted
+// over to the right when engaging the mobile hamburger menu
+=mobile-menu-accelerated-transform($distance: $side-nav-width-mobile)
+    +transition-property(transform)
+    +transition-duration(300ms)
+    +transition-timing-function($ease-in-out-quad)
+    +transform(translate3d(0, 0, 0))
+    +transform-performant
+    perspective: 1000
+    .mobile_menu &
+        +transform(translate3d($distance, 0, 0))
+
+=transform-performant
+    -webkit-backface-visibility: hidden
+    -webkit-perspective: 1000
+    backface-visibility: hidden
+    perspective: 1000
+
+=clear
     &:before, &:after
         content: "\0020"
         display: block
@@ -95,6 +139,8 @@
     @if $point == lg
         @media (min-width: 1200px)
             @content
+
+
 
 =prem($prop, $pxvals, $base: $base-font-size)
     $rem_comp: null
