@@ -11,11 +11,7 @@
 
 =no-select
     -webkit-touch-callout: none
-    -webkit-user-select: none
-    -khtml-user-select: none
-    -moz-user-select: none
-    -ms-user-select: none
-    user-select: none
+    +vendorize(user-select, none)
 
 =no-outline
     +hover-active-focus
@@ -23,11 +19,7 @@
         -moz-outline-style: none
 
 =no-text-size-adjust
-    -webkit-text-size-adjust: none
-    -moz-text-size-adjust: none
-    -ms-text-size-adjust: none
-    -o-text-size-adjust: none
-    text-size-adjust: none
+    +vendorize(text-size-adjust, none)
 
 =hover-active-focus
     &:hover,
